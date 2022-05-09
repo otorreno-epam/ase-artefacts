@@ -10,6 +10,7 @@ import com.epam.data.aggregator.DataAggregator
 import com.epam.serialization.Serializers._
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
 
 case class HistoricalDataAnalysisService(interface: String, port: Int, dataAggregator: DataAggregator)(
         implicit val system: ActorSystem) {
@@ -20,12 +21,14 @@ case class HistoricalDataAnalysisService(interface: String, port: Int, dataAggre
   val routes: Route = {
     logRequestResult("historical-data-analysis-service") {
       (path("result") & get) {
-        complete {
-          Future {
-            val result = dataAggregator.aggregate("soccer", 2000 to 2001)
-            logger.info(s"result: $result")
-            result
-          }.map[ToResponseMarshallable](a => a)
+        withRequestTimeout(1.minute) {
+          complete {
+            Future {
+              val result = dataAggregator.aggregate("soccer", 2000 to 2003)
+              logger.info(s"result: $result")
+              result
+            }.map[ToResponseMarshallable](a => a)
+          }
         }
       }
     }

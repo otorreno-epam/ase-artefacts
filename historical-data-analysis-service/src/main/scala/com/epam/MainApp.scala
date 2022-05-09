@@ -11,13 +11,13 @@ object MainApp extends App {
   private val config                       = ConfigFactory.load()
 
   val dataProvider =
-    CachingDataProvider(
-        RESTDataProvider(config.getString("services.data-provider.host"), config.getInt("services.data-provider.port")))
+    //CachingDataProvider(
+    RESTDataProvider(config.getString("services.data-provider.host"), config.getInt("services.data-provider.port")) //)
 
   val dataAggregator = InMemoryDataAggregator(dataProvider)
 
   private val service =
-    new HistoricalDataAnalysisService(config.getString("http.interface"), config.getInt("http.port"), dataAggregator)
+    HistoricalDataAnalysisService(config.getString("http.interface"), config.getInt("http.port"), dataAggregator)
 
   service.start()
 }
