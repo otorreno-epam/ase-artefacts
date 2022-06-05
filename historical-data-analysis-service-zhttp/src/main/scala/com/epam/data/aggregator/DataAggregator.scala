@@ -1,6 +1,8 @@
 package com.epam.data.aggregator
 
 import com.epam.domain.AggregationResult
+import zhttp.service.{ChannelFactory, EventLoopGroup}
+import zio.*
 
 trait DataAggregator {
 
@@ -10,5 +12,5 @@ trait DataAggregator {
     * @param years of the matches whose score we would like to aggregate
     * @return statistics about matches for a given sport and sequence of years
     */
-  def aggregate(sport: String, years: Seq[Int]): AggregationResult
+  def aggregate(sport: String, years: Seq[Int]): ZIO[EventLoopGroup & ChannelFactory, Throwable, AggregationResult]
 }
